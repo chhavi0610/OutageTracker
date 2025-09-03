@@ -2,13 +2,28 @@ import streamlit as st
 import pandas as pd
 from datetime import timedelta
 
-# Title
+# Page config
+st.set_page_config(page_title="OutageRadar", page_icon="generated-icon.png", layout="wide")
+
+# Sidebar
+st.sidebar.image("generated-icon.png", width=120)
+st.sidebar.title("📊 OutageRadar")
+st.sidebar.markdown("Airtel Outage & Complaint Matcher")
+st.sidebar.info("Upload outage and complaint data to see matching records.")
+
+# Main Title
 st.title("🔌 Outages and Complaints Matcher")
+st.write(
+    """
+    This tool analyzes **Airtel outages** and **user complaints** data, 
+    and matches them when they occur within **4 hours** of each other.  
+    Upload your CSV files to begin.
+    """
+)
 
 # File Uploaders
-uploaded_outages = st.file_uploader("Upload Outages CSV File", type=["csv"])
-uploaded_complaints = st.file_uploader("Upload Complaints CSV File",
-                                       type=["csv"])
+uploaded_outages = st.file_uploader("📂 Upload Outages CSV File", type=["csv"])
+uploaded_complaints = st.file_uploader("📂 Upload Complaints CSV File", type=["csv"])
 
 # Process the files once both are uploaded
 if uploaded_outages and uploaded_complaints:
@@ -41,8 +56,8 @@ if uploaded_outages and uploaded_complaints:
     results_df = filtered_df[['site', 'time_of_outage', 'time_of_complaint']]
 
     # Show the results
-    st.success(f"Found {len(results_df)} matching records!")
-    st.dataframe(results_df)
+    st.success(f"✅ Found {len(results_df)} matching records!")
+    st.dataframe(results_df, use_container_width=True)
 
     # Provide download button
     csv = results_df.to_csv(index=False).encode('utf-8')
@@ -50,6 +65,10 @@ if uploaded_outages and uploaded_complaints:
                        data=csv,
                        file_name="matched_outages_complaints.csv",
                        mime='text/csv')
-
 else:
-    st.info("Please upload both Outages and Complaints CSV files to proceed.")
+    st.info("⬆️ Please upload both Outages and Complaints CSV files to proceed.")
+
+# Footer
+st.markdown("---")
+st.caption("Built with ❤️ using Python & Streamlit | Project: OutageRadar")
+
